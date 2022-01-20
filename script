@@ -1,0 +1,92 @@
+import pandas as pd 
+import numpy as np
+import matplotlib.pyplot as plt
+pip install wordcloud
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+
+#load the datasets
+data1 = pd.read_excel(r'C:/Users/osann/OneDrive/Desktop/Data Science In Action Unified Survey (Risposte) (2).xlsx')
+data2 = pd.read_excel(r'C:/Users/osann/OneDrive/Desktop/data science bonus project (Responses).xlsx')
+
+#remove 1 row from dataset 1
+data2 = data2.drop(labels=[1], axis = 0)
+
+#check missing values 
+data1.isnull() #inutile
+data1.notnull() #inutile
+
+#età media 
+data1_mean = data1["How old are you?"].mean()
+
+data2["What is you age?"] = data2["What is you age?"].astype("float")
+#va rinominata 
+data2_mean = data2["What is you age?"].mean()
+
+#rename columns
+data2.rename(columns = {"What is you age?":"age"}, inplace = True)
+data1.rename(columns = {"How old are you?":"age"}, inplace = True)
+data2.rename(columns = {"How would you describe your gender":"gender"}, inplace = True)
+data1.rename(columns = {"How would you describe your gender?":"gender"}, inplace = True)
+data1.rename(columns = {"How would you describe yourself? (please, give three words separate by a comma)":"self"}, inplace = True)
+data2.rename(columns = {"How would you describe yourself? (please, give three words separate by a comma)":"self"}, inplace = True)
+data2.rename(columns = {"What would you say is your best quality?":"best_quality"}, inplace = True)
+data1.rename(columns = {"What would you say is your best quality?":"best_quality"}, inplace = True)
+data1.rename(columns = {"CHOOSE YOUR KEYWORD ;) format: aaaaaa00 - nothing that will remind of you. SCREENSHOT THIS ONCE TYPED :) (eg. pizzamargherita26)":"keyword"}, inplace = True)
+data1.rename(columns = {"CHOOSE YOUR KEYWORD ;) format: aaaaaa00 - nothing that will remind of you. (eg. pizzamargherita26)":"keyword"}, inplace = True)
+data1.rename(columns = {"Have you got insomnia problems?":"insomnia"}, inplace = True)
+data2.rename(columns = {"Have you got insomnia problems?":"insomnia"}, inplace = True)
+data1.rename(columns = {"How stressed do you feel on a scale from 1 (no stressed) to 5 (highly stressed)?":"stress_level"}, inplace = True)
+data2.rename(columns = {"How stressed do you feel on a scale from 1 (no stressed) to 5 (highly stressed)?":"stress_level"}, inplace = True)
+
+#word cloud for "self"
+data1["self"] = data1["self"].astype("string")
+text = data1["self"]
+wordcloud = WordCloud().generate(str(text))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+plt.show()
+
+data2["self"] = data2["self"].astype("string")
+text2 = data2["self"]
+wordcloud = WordCloud().generate(str(text2))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+plt.show()
+#va migliorata la grafica
+
+#word cloud "best_quality"
+data1["best_quality"] = data1["best_quality"].astype("string")
+text_bestquality = data1["best_quality"]
+wordcloud = WordCloud().generate(str(text_bestquality))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+plt.show()
+
+data2["best_quality"] = data2["best_quality"].astype("string")
+text_bestquality2 = data1["best_quality"]
+wordcloud = WordCloud().generate(str(text_bestquality))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+plt.show()
+
+#va migliorata la grafica 
+
+
+df("titolo").plot(kind = "hist", "line")
+
+
+data1["Where did you graduate?"] = data1["Where did you graduate?"].astype("string")
+
+
+print(data1["Where did you graduate?"])
+
+    
+grad_stud = data1["Where did you graduate?"]
+names = data1["keyword"]
+plt.bar(grad_stud, names, color='green')
+plt.legend()
+plt.xticks(rotation= 75)
+plt.show()
+#brutto
+
+
