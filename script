@@ -6,7 +6,8 @@ from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 
 #load the datasets
 data1 = pd.read_excel(r'C:/Users/osann/OneDrive/Desktop/Data Science In Action Unified Survey (Risposte) (2).xlsx')
-data2 = pd.read_excel(r'C:/Users/osann/OneDrive/Desktop/data science bonus project (Responses).xlsx')
+data2 = pd.read_excel(r'C:/Users/osann/OneDrive/Desktop/data science 2.xlsx')
+data3 = pd.read_excel(r'C:/Users/osann/OneDrive/Desktop/data science completo.xlsx')
 
 #remove 1 row from dataset 1
 data2 = data2.drop(labels=[1], axis = 0)
@@ -27,6 +28,7 @@ data2.rename(columns = {"What is you age?":"age"}, inplace = True)
 data1.rename(columns = {"How old are you?":"age"}, inplace = True)
 data2.rename(columns = {"How would you describe your gender":"gender"}, inplace = True)
 data1.rename(columns = {"How would you describe your gender?":"gender"}, inplace = True)
+data3.rename(columns = {"How would you describe your gender":"gender"}, inplace = True)
 data1.rename(columns = {"How would you describe yourself? (please, give three words separate by a comma)":"self"}, inplace = True)
 data2.rename(columns = {"How would you describe yourself? (please, give three words separate by a comma)":"self"}, inplace = True)
 data2.rename(columns = {"What would you say is your best quality?":"best_quality"}, inplace = True)
@@ -37,6 +39,179 @@ data1.rename(columns = {"Have you got insomnia problems?":"insomnia"}, inplace =
 data2.rename(columns = {"Have you got insomnia problems?":"insomnia"}, inplace = True)
 data1.rename(columns = {"How stressed do you feel on a scale from 1 (no stressed) to 5 (highly stressed)?":"stress_level"}, inplace = True)
 data2.rename(columns = {"How stressed do you feel on a scale from 1 (no stressed) to 5 (highly stressed)?":"stress_level"}, inplace = True)
+
+#rinominare data 3
+data3.rename(columns = {"Have you got insomnia problems?":"insomnia"}, inplace = True)
+data3.rename(columns = {"Do you rather read a book or watch a movie?":"book_movie"}, inplace = True)
+data3.rename(columns = {"What is your main source of daily news?":"daily_news"}, inplace = True)
+data3.rename(columns = {"To contact someone, do you prefer a phone call or a text message?":"text_call"}, inplace = True)
+data3.rename(columns = {"Do you consider yourself kind of bored?":"bored"}, inplace = True)
+data3.rename(columns = {"In a social context do you find yourself using often the phone?":"phone_with_people"}, inplace = True)
+data3.rename(columns = {"How many cigarettes do you smoke per day?":"cigarettes"}, inplace = True)
+data3.rename(columns = {"What is the thing you value the most in your life (e.g. family, career, health, friendship etc.)?":"valuable_things"}, inplace = True)
+data3.rename(columns = {"Do you feel happy?":"happiness"}, inplace = True)
+data3.rename(columns = {"Do you monitor how many calories you acquire each day?":"calories"}, inplace = True)
+data3.rename(columns = {"Do your parents smoke?":"smoking_parents"}, inplace = True)
+data3.rename(columns = {"Are you anxious?":"anxiety"}, inplace = True)
+data3.rename(columns = {"How many books do you read every year on average?":"books_year"}, inplace = True)
+data3.rename(columns = {"How many times per week to you practice sport activity?":"sport_frequency"}, inplace = True)
+data3.rename(columns = {"What is you age?":"age"}, inplace = True)
+data3.rename(columns = {"Is one of your parents or both entrepreneur? ":"parents_ent"}, inplace = True)
+data3.rename(columns = {"How many days do you think you can stay without a smartphone?":"days_without_phone"}, inplace = True)
+data3.rename(columns = {"Have you ever looked at your phone to find out something (eg. Time) but got distracted and looked at something else forgetting the reason why you looked at your phone?":"phone_distraction"}, inplace = True)
+data3.rename(columns = {"In your group of friends / people you hang out with, does the majority smoke?":"smoking_friends"}, inplace = True)
+data3.rename(columns = {"Do you drink carbonated drinks?":"carbonated_drinks"}, inplace = True)
+data3.rename(columns = {"How many hours on average do you spend using your phone in a day? (for a higher accuracy check the settings of your phone, please)":"phone_usage"}, inplace = True)
+data3.rename(columns = {"How would you describe yourself? (please, give three words separate by a comma)":"self_description"}, inplace = True)
+data3.rename(columns = {"Which sport do you practice?":"sport"}, inplace = True)
+data3.rename(columns = {"From which university did you graduate? ":"uni"}, inplace = True)
+data3.rename(columns = {"How do you think COVID-19 has affected your social life?":"covid_life"}, inplace = True)
+data3.rename(columns = {"How stressed do you feel on a scale from 1 (no stressed) to 5 (highly stressed)?":"stress"}, inplace = True)
+data3.rename(columns = {"How many languages do you speak fluently?":"languages"}, inplace = True)
+data3.rename(columns = {"How many brothers or sisters do you have?":"bro_sis"}, inplace = True)
+data3.rename(columns = {"How many books do you read every year on average?":"book_year"}, inplace = True)
+data3.rename(columns = {"How many coffees are you having per day?":"coffee"}, inplace = True)
+data3.rename(columns = {"What's your level of weekly alcohol assumption? ":"alcohol"}, inplace = True)
+data3.rename(columns = {"How much do you care about nutrition and having a healthy lifestyle? ":"nutrition_care"}, inplace = True)
+data3.rename(columns = {"At what time do you usually go to bed?":"bed_time"}, inplace = True)
+data3.rename(columns = {"How many hours do you sleep per night on average?":"sleep_average"}, inplace = True)
+data3.rename(columns = {"If you have one, what is (are) your favourite hobby(ies)?":"hobbies"}, inplace = True)
+data3.rename(columns = {"What would you say is your best quality?":"best_quality"}, inplace = True)
+data3.rename(columns = {"What do you do when you’re going through a personal crisis?":"personal_crisis"}, inplace = True)
+data3.rename(columns = {"What's your parents’ degree level?":"parents_degree"}, inplace = True)
+data3.rename(columns = {"How important is for you following a diet in your lifestyle? ":"diet"}, inplace = True)
+data3.rename(columns = {"What is the field of your bachelor’s degree? ":"bachelor_degree"}, inplace = True)
+data3.rename(columns = {"CHOOSE YOUR KEYWORD ;) format: aaaaaa00 - nothing that will remind of you. (eg. pizzamargherita26)":"keyword"}, inplace = True)
+data3.rename(columns = {"Describe your typical evening in three words (please divide by a comma)":"evening"}, inplace = True)
+data3.rename(columns = {"How many hours do you spend in hobbies per day?":"hobbies_time"}, inplace = True)
+
+
+
+#replace missing value with actual values:
+data3.isnull()
+mean_phone = data3["phone_usage"].mean()
+data3["phone_usage"] = data3["phone_usage"].replace(np.nan, mean_phone)
+
+mean_sleep = data3["sleep_average"].mean()
+data3["sleep_average"] = data3["sleep_average"].replace(np.nan, mean_sleep)
+
+mean_hobbies = data3["hobbies_time"].mean()
+data3["hobbies_time"] = data3["hobbies_time"].replace(np.nan, mean_hobbies)
+
+data3["hobbies"] = data3["hobbies"].replace(np.nan, "none")
+data3["covid_life"] = data3["covid_life"].replace(np.nan, "no answer")
+data3["personal_crisis"] = data3["personal_crisis"].replace(np.nan, "no answer")
+
+#levare colonna stress 1-7
+
+data_dummy = pd.get_dummies(data3, 
+                            columns = ['gender','insomnia', 'book_movie', 'daily_news', 'text_call', 'bored', 'phone_with_people', 'cigarettes','valuable_things', 'happiness', 'calories', 'smoking_parents', 'anxiety', 'books_year', 'sport_frequency', 'parents_ent', 'days_without_phone', 'phone_distraction', 'smoking_friends', 'carbonated_drinks', 'sport', 'uni', 'parents_degree','bachelor_degree'],
+                            drop_first = True)
+
+
+data_dummy.drop('self_description', axis=1, inplace=True)
+data_dummy.drop('covid_life', axis=1, inplace=True)
+data_dummy.drop('bed_time', axis=1, inplace=True)
+data_dummy.drop('hobbies', axis=1, inplace=True)
+data_dummy.drop('best_quality', axis=1, inplace=True)
+data_dummy.drop('personal_crisis', axis=1, inplace=True)
+data_dummy.drop('keyword', axis=1, inplace=True)
+data_dummy.drop('Do you consider yourself a stressed person? Answer from 1 to 7 (1 minimum level, 7 maximum level)', axis=1, inplace=True)
+data_dummy.drop('evening', axis=1, inplace=True)
+
+
+data4 = data3.copy()
+data4.drop('self_description', axis=1, inplace=True)
+data4.drop('covid_life', axis=1, inplace=True)
+data4.drop('bed_time', axis=1, inplace=True)
+data4.drop('hobbies', axis=1, inplace=True)
+data4.drop('best_quality', axis=1, inplace=True)
+data4.drop('personal_crisis', axis=1, inplace=True)
+data4.drop('keyword', axis=1, inplace=True)
+data4.drop('Do you consider yourself a stressed person? Answer from 1 to 7 (1 minimum level, 7 maximum level)', axis=1, inplace=True)
+data4.drop('evening', axis=1, inplace=True)
+
+#normalizziamo
+data4_norm = data4.copy()
+scaler = preprocessing.MinMaxScaler()
+data4_norm[['age', 'languages', 'bro_sis', 'coffee', 'phone_usage', 'sleep_average', 'hobbies_time']] = scaler.fit_transform(data4_norm[['age', 'languages', 'bro_sis', 'coffee', 'phone_usage', 'sleep_average', 'hobbies_time']])
+
+pip install kmodes
+from kmodes.kprototypes import KPrototypes
+kproto = KPrototypes(n_clusters=5, init='Cao')
+clusters = kproto.fit_predict(data4_norm, categorical= [0,1])
+#join data with labels 
+labels = pd.DataFrame(clusters)
+labeled_data4 = pd.concat((data4,labels),axis=1)
+labeled_data4 = labeled_data4.rename({0:'labels'},axis=1)
+
+data4.dtypes("gender")
+data4["gender"] = data4["gender"].astype(float)
+data4.dtypes
+
+
+
+#categorical=[0,2,3,4,5,6,8,10,12,14,15,16,17,22,23,24,25,26,28,29,30,31,32,33])
+
+#customers_norm = customers.copy()
+#scaler = preprocessing.MinMaxScaler()
+#customers_norm[['Age','Time Spent']] = scaler.fit_transform(customers_norm[['Age','Time Spent']])
+
+data_dummy_norm = data_dummy.copy()
+scaler = preprocessing.MinMaxScaler()
+data_dummy_norm[['age', 'languages', 'bro_sis', 'coffee', 'phone_usage', 'sleep_average', 'hobbies_time']] = scaler.fit_transform(data_dummy_norm[['age', 'languages', 'bro_sis', 'coffee', 'phone_usage', 'sleep_average', 'hobbies_time']])
+
+kproto = KPrototypes(n_clusters=3, init='Cao')
+clusters = kproto.fit_predict(customers_norm, categorical=[0, 1])
+#join data with labels 
+labels = pd.DataFrame(clusters)
+labeledCustomers = pd.concat((customers,labels),axis=1)
+labeledCustomers = labeledCustomers.rename({0:'labels'},axis=1)
+
+from kmodes.kprototypes import KPrototypes
+kproto = KPrototypes(n_clusters=5, init='Cao')
+clusters = kproto.fit_predict(data_dummy_norm, categorical=[0, 1])
+
+labels = pd.data_dummy_norm(clusters)
+labeled_data = pd.concat((data_dummy,labels),axis=1)
+labeled_data = labeled_data.rename({0:'labels'},axis=1)
+
+
+
+from sklearn.cluster import KMeans
+kmeans = KMeans(5)
+clusters = kmeans.fit_predict(data_dummy_norm)
+labels = pd.DataFrame(clusters)
+labeled_data = pd.concat((data_dummy,labels),axis=1)
+labeled_data = labeled_data.rename({0:'labels'},axis=1)
+labeled_data
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+labeled_data['Constant'] = 0 #dummy feature for plotting
+
+f, axes = plt.subplots(1, 4, figsize=(25, 7), sharex=False)
+f.subplots_adjust(hspace=0.2, wspace=0.7)
+
+for i in range(4):
+    col = labeled_data.columns[i]
+    if i > 5:    
+        sns.catplot(x=col, y='labels', kind="swarm", hue='labels', data=labeled_data,ax=axes[i])
+    else:
+        ax = sns.swarmplot(x=labeled_data['Constant'],y=labeled_data[col].values,hue=labeled_data['labels'],ax=axes[i])
+        ax.set_title(col)
+        
+plt.close(2)
+plt.close(3)
+plt.show()
+
+
+
+
+
+
+
 
 #word cloud for "self"
 data1["self"] = data1["self"].astype("string")
@@ -88,5 +263,13 @@ plt.legend()
 plt.xticks(rotation= 75)
 plt.show()
 #brutto
+
+data4 = pd.get_dummies(data3['gender'])
+
+
+
+from sklearn import preprocessing
+
+
 
 
