@@ -1,0 +1,558 @@
+import pandas as pd 
+import numpy as np
+import matplotlib.pyplot as plt
+pip install wordcloud
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+from sklearn import preprocessing
+pip install kmodes
+from kmodes.kprototypes import KPrototypes
+import seaborn as sns
+
+
+
+#load the datasets
+data1 = pd.read_excel(r'C:/Users/osann/OneDrive/Desktop/Data Science In Action Unified Survey (Risposte) (2).xlsx')
+data2 = pd.read_excel(r'C:/Users/osann/OneDrive/Desktop/data science 2.xlsx')
+data3 = pd.read_excel(r'C:/Users/osann/OneDrive/Desktop/data science completo.xlsx')
+
+
+#check missing values 
+data1.isnull() #inutile
+data1.notnull() #inutile
+
+#età media 
+data1_mean = data1["How old are you?"].mean()
+
+data2["What is you age?"] = data2["What is you age?"].astype("float")
+#va rinominata 
+data2_mean = data2["What is you age?"].mean()
+
+#rename columns
+data2.rename(columns = {"What is you age?":"age"}, inplace = True)
+data1.rename(columns = {"How old are you?":"age"}, inplace = True)
+data2.rename(columns = {"How would you describe your gender":"gender"}, inplace = True)
+data1.rename(columns = {"How would you describe your gender?":"gender"}, inplace = True)
+data3.rename(columns = {"How would you describe your gender":"gender"}, inplace = True)
+data1.rename(columns = {"How would you describe yourself? (please, give three words separate by a comma)":"self"}, inplace = True)
+data2.rename(columns = {"How would you describe yourself? (please, give three words separate by a comma)":"self"}, inplace = True)
+data2.rename(columns = {"What would you say is your best quality?":"best_quality"}, inplace = True)
+data1.rename(columns = {"What would you say is your best quality?":"best_quality"}, inplace = True)
+data1.rename(columns = {"CHOOSE YOUR KEYWORD ;) format: aaaaaa00 - nothing that will remind of you. SCREENSHOT THIS ONCE TYPED :) (eg. pizzamargherita26)":"keyword"}, inplace = True)
+data1.rename(columns = {"CHOOSE YOUR KEYWORD ;) format: aaaaaa00 - nothing that will remind of you. (eg. pizzamargherita26)":"keyword"}, inplace = True)
+data1.rename(columns = {"Have you got insomnia problems?":"insomnia"}, inplace = True)
+data2.rename(columns = {"Have you got insomnia problems?":"insomnia"}, inplace = True)
+data1.rename(columns = {"How stressed do you feel on a scale from 1 (no stressed) to 5 (highly stressed)?":"stress_level"}, inplace = True)
+data2.rename(columns = {"How stressed do you feel on a scale from 1 (no stressed) to 5 (highly stressed)?":"stress_level"}, inplace = True)
+
+#rinominare data 3
+data3.rename(columns = {"Have you got insomnia problems?":"insomnia"}, inplace = True)
+data3.rename(columns = {"Do you rather read a book or watch a movie?":"book_movie"}, inplace = True)
+data3.rename(columns = {"What is your main source of daily news?":"daily_news"}, inplace = True)
+data3.rename(columns = {"To contact someone, do you prefer a phone call or a text message?":"text_call"}, inplace = True)
+data3.rename(columns = {"Do you consider yourself kind of bored?":"bored"}, inplace = True)
+data3.rename(columns = {"In a social context do you find yourself using often the phone?":"phone_with_people"}, inplace = True)
+data3.rename(columns = {"How many cigarettes do you smoke per day?":"cigarettes"}, inplace = True)
+data3.rename(columns = {"What is the thing you value the most in your life (e.g. family, career, health, friendship etc.)?":"valuable_things"}, inplace = True)
+data3.rename(columns = {"Do you feel happy?":"happiness"}, inplace = True)
+data3.rename(columns = {"Do you monitor how many calories you acquire each day?":"calories"}, inplace = True)
+data3.rename(columns = {"Do your parents smoke?":"smoking_parents"}, inplace = True)
+data3.rename(columns = {"Are you anxious?":"anxiety"}, inplace = True)
+data3.rename(columns = {"How many books do you read every year on average?":"books_year"}, inplace = True)
+data3.rename(columns = {"How many times per week to you practice sport activity?":"sport_frequency"}, inplace = True)
+data3.rename(columns = {"What is you age?":"age"}, inplace = True)
+data3.rename(columns = {"Is one of your parents or both entrepreneur? ":"parents_ent"}, inplace = True)
+data3.rename(columns = {"How many days do you think you can stay without a smartphone?":"days_without_phone"}, inplace = True)
+data3.rename(columns = {"Have you ever looked at your phone to find out something (eg. Time) but got distracted and looked at something else forgetting the reason why you looked at your phone?":"phone_distraction"}, inplace = True)
+data3.rename(columns = {"In your group of friends / people you hang out with, does the majority smoke?":"smoking_friends"}, inplace = True)
+data3.rename(columns = {"Do you drink carbonated drinks?":"carbonated_drinks"}, inplace = True)
+data3.rename(columns = {"How many hours on average do you spend using your phone in a day? (for a higher accuracy check the settings of your phone, please)":"phone_usage"}, inplace = True)
+data3.rename(columns = {"How would you describe yourself? (please, give three words separate by a comma)":"self_description"}, inplace = True)
+data3.rename(columns = {"Which sport do you practice?":"sport"}, inplace = True)
+data3.rename(columns = {"From which university did you graduate? ":"uni"}, inplace = True)
+data3.rename(columns = {"How do you think COVID-19 has affected your social life?":"covid_life"}, inplace = True)
+data3.rename(columns = {"How stressed do you feel on a scale from 1 (no stressed) to 5 (highly stressed)?":"stress"}, inplace = True)
+data3.rename(columns = {"How many languages do you speak fluently?":"languages"}, inplace = True)
+data3.rename(columns = {"How many brothers or sisters do you have?":"bro_sis"}, inplace = True)
+data3.rename(columns = {"How many books do you read every year on average?":"book_year"}, inplace = True)
+data3.rename(columns = {"How many coffees are you having per day?":"coffee"}, inplace = True)
+data3.rename(columns = {"What's your level of weekly alcohol assumption? ":"alcohol"}, inplace = True)
+data3.rename(columns = {"How much do you care about nutrition and having a healthy lifestyle? ":"nutrition_care"}, inplace = True)
+data3.rename(columns = {"At what time do you usually go to bed?":"bed_time"}, inplace = True)
+data3.rename(columns = {"How many hours do you sleep per night on average?":"sleep_average"}, inplace = True)
+data3.rename(columns = {"If you have one, what is (are) your favourite hobby(ies)?":"hobbies"}, inplace = True)
+data3.rename(columns = {"What would you say is your best quality?":"best_quality"}, inplace = True)
+data3.rename(columns = {"What do you do when you’re going through a personal crisis?":"personal_crisis"}, inplace = True)
+data3.rename(columns = {"What's your parents’ degree level?":"parents_degree"}, inplace = True)
+data3.rename(columns = {"How important is for you following a diet in your lifestyle? ":"diet"}, inplace = True)
+data3.rename(columns = {"What is the field of your bachelor’s degree? ":"bachelor_degree"}, inplace = True)
+data3.rename(columns = {"CHOOSE YOUR KEYWORD ;) format: aaaaaa00 - nothing that will remind of you. (eg. pizzamargherita26)":"keyword"}, inplace = True)
+data3.rename(columns = {"Describe your typical evening in three words (please divide by a comma)":"evening"}, inplace = True)
+data3.rename(columns = {"How many hours do you spend in hobbies per day?":"hobbies_time"}, inplace = True)
+
+
+
+#replace missing value with actual values:
+data3.isnull()
+mean_phone = data3["phone_usage"].mean()
+data3["phone_usage"] = data3["phone_usage"].replace(np.nan, mean_phone)
+
+mean_sleep = data3["sleep_average"].mean()
+data3["sleep_average"] = data3["sleep_average"].replace(np.nan, mean_sleep)
+
+mean_hobbies = data3["hobbies_time"].mean()
+data3["hobbies_time"] = data3["hobbies_time"].replace(np.nan, mean_hobbies)
+
+data3["hobbies"] = data3["hobbies"].replace(np.nan, "none")
+data3["covid_life"] = data3["covid_life"].replace(np.nan, "no answer")
+data3["personal_crisis"] = data3["personal_crisis"].replace(np.nan, "no answer")
+data3['sport_frequency'] = data3['sport_frequency'].replace(["I don't practice any sport"], [0])
+data3['sport_frequency'] = data3['sport_frequency'].replace(["I don't practice any sports"], [0])
+data3['sport_frequency'] = data3['sport_frequency'].replace(["More than 3 times per week"], [4])
+data3['sport_frequency'] = data3['sport_frequency'].replace(["more than 3 times a week"], [4])
+#levare colonna stress 1-7
+data3.drop('Do you consider yourself a stressed person? Answer from 1 to 7 (1 minimum level, 7 maximum level)', axis = 1, inplace = True)
+
+#age distribution
+ax = sns.distplot(x=data3.age, bins=30) 
+ax.set_xlabel('Age')
+prices= data3.age.unique()
+
+
+
+
+
+
+data_dummy = pd.get_dummies(data3, 
+                            columns = ['gender','insomnia', 'book_movie', 'daily_news', 'text_call', 'bored', 'phone_with_people', 'cigarettes','valuable_things', 'happiness', 'calories', 'smoking_parents', 'anxiety', 'books_year', 'sport_frequency', 'parents_ent', 'days_without_phone', 'phone_distraction', 'smoking_friends', 'carbonated_drinks', 'sport', 'uni', 'parents_degree','bachelor_degree'],
+                            drop_first = True)
+
+
+data_dummy.drop('self_description', axis=1, inplace=True)
+data_dummy.drop('covid_life', axis=1, inplace=True)
+data_dummy.drop('bed_time', axis=1, inplace=True)
+data_dummy.drop('hobbies', axis=1, inplace=True)
+data_dummy.drop('best_quality', axis=1, inplace=True)
+data_dummy.drop('personal_crisis', axis=1, inplace=True)
+data_dummy.drop('keyword', axis=1, inplace=True)
+data_dummy.drop('Do you consider yourself a stressed person? Answer from 1 to 7 (1 minimum level, 7 maximum level)', axis=1, inplace=True)
+data_dummy.drop('evening', axis=1, inplace=True)
+
+
+data4 = data3.copy()
+data4.drop('self_description', axis=1, inplace=True)
+data4.drop('covid_life', axis=1, inplace=True)
+data4.drop('bed_time', axis=1, inplace=True)
+data4.drop('hobbies', axis=1, inplace=True)
+data4.drop('best_quality', axis=1, inplace=True)
+data4.drop('personal_crisis', axis=1, inplace=True)
+data4.drop('keyword', axis=1, inplace=True)
+data4.drop('evening', axis=1, inplace=True)
+
+
+
+#normalizziamo
+data4_norm = data4.copy()
+scaler = preprocessing.MinMaxScaler()
+data4_norm[['age', 'sport_frequency','languages', 'bro_sis', 'coffee', 'phone_usage', 'sleep_average', 'hobbies_time', 'stress', 'alcohol', 'nutrition_care', 'diet']] = scaler.fit_transform(data4_norm[['age','sport_frequency', 'languages', 'bro_sis', 'coffee', 'phone_usage', 'sleep_average', 'hobbies_time', 'stress', 'alcohol', 'nutrition_care', 'diet']])
+
+#make array matrix
+data4_norm_matrix = data4_norm.to_numpy()
+data4_norm_matrix
+
+data4_norm.info()
+
+
+#metto come array solo le variabili non categoriche
+data4_norm_matrix[:, 1] = data4_norm_matrix[:, 1].astype(float)
+data4_norm_matrix[:, 3] = data4_norm_matrix[:, 3].astype(float)
+data4_norm_matrix[:, 7] = data4_norm_matrix[:, 7].astype(float)
+data4_norm_matrix[:, 9] = data4_norm_matrix[:, 9].astype(float)
+data4_norm_matrix[:, 11] = data4_norm_matrix[:, 11].astype(float)
+data4_norm_matrix[:, 13] = data4_norm_matrix[:, 13].astype(float)
+data4_norm_matrix[:, 18] = data4_norm_matrix[:, 18].astype(float)
+data4_norm_matrix[:, 19] = data4_norm_matrix[:, 19].astype(float)
+data4_norm_matrix[:, 20] = data4_norm_matrix[:, 20].astype(float)
+data4_norm_matrix[:, 21] = data4_norm_matrix[:, 21].astype(float)
+data4_norm_matrix[:, 27] = data4_norm_matrix[:, 27].astype(float)
+data4_norm_matrix[:, 34] = data4_norm_matrix[:, 34].astype(float)
+
+kproto = KPrototypes(n_clusters=4, verbose=2,max_iter=25)
+
+clusters = kproto.fit_predict(data4_norm, categorical=[0,2,4,5,6,8,10,12,14,15,16,17,22,23,24,25,26,28,29,30,31,32,33])
+
+kproto.cost_ #99.42290814059992
+#(per la documentationn seguire quello che dice il tipo su youtube)
+#the best iteration was number 4
+
+print(kproto.cluster_centroids_) #centroid for each cluster 
+cluster_dict=[] #putting the cluster into a dictionary
+for c in clusters:
+    cluster_dict.append(c)
+
+data4_norm['cluster']=cluster_dict #creating new column in the dataframe with clusters
+
+data4_norm[data4_norm['cluster']== 0]
+data4_norm[data4_norm['cluster']== 1]
+data4_norm[data4_norm['cluster']== 2]
+data4_norm[data4_norm['cluster']== 3]
+
+#dovremmo ri standardizzare??
+
+#Choosing optimal K
+cost = []
+for num_clusters in list(range(1,15)): #si può cambiare il 15 e cambia l' elbow
+    kproto = KPrototypes(n_clusters=num_clusters, init='Cao')
+    kproto.fit_predict(data4_norm_matrix, categorical=[0,2,4,5,6,8,10,12,14,15,16,17,22,23,24,25,26,28,29,30,31,32,33])
+    cost.append(kproto.cost_)
+    
+plt.plot(cost)
+#BELLA MERDA
+
+#proviamo a plottare i clusters 
+#SCLERO NON CI RIESCO 
+
+
+
+
+
+#prova con dataset non standardizzato
+dataa1 = data4.copy()
+
+#make array matrix
+dataa = dataa1.to_numpy()
+
+
+#metto come array solo le variabili non categoriche
+dataa[:, 1] = dataa[:, 1].astype(float)
+dataa[:, 3] = dataa[:, 3].astype(float)
+dataa[:, 7] = dataa[:, 7].astype(float)
+dataa[:, 9] = dataa[:, 9].astype(float)
+dataa[:, 11] = dataa[:, 11].astype(float)
+dataa[:, 13] = dataa[:, 13].astype(float)
+dataa[:, 18] = dataa[:, 18].astype(float)
+dataa[:, 19] = dataa[:, 19].astype(float)
+dataa[:, 20] = dataa[:, 20].astype(float)
+dataa[:, 21] = dataa[:, 21].astype(float)
+dataa[:, 27] = dataa[:, 27].astype(float)
+dataa[:, 34] = dataa[:, 34].astype(float)
+
+kproto = KPrototypes(n_clusters=6, verbose=2,max_iter=25)
+clusters = kproto.fit_predict(dataa1, categorical=[0,2,4,5,6,8,10,12,14,15,16,17,22,23,24,25,26,28,29,30,31,32,33])
+#(per la documentationn seguire quello che dice il tipo su youtube)
+#the best iteration was number 9
+
+
+print(kproto.cluster_centroids_) #centroid for each cluster 
+cluster_dicta=[] #putting the cluster into a dictionary
+for c in clusters:
+    cluster_dicta.append(c)
+
+dataa1['cluster']=cluster_dicta #creating new column in the dataframe with clusters
+
+dataa1[dataa1['cluster']== 0]
+dataa1[dataa1['cluster']== 1]
+dataa1[dataa1['cluster']== 2]
+dataa1[dataa1['cluster']== 3]
+dataa1[dataa1['cluster']== 4]
+dataa1[dataa1['cluster']== 5]
+#mmmm
+
+
+
+
+
+pip install kmodes
+from kmodes.kprototypes import KPrototypes
+kproto = KPrototypes(n_clusters=5, init='Cao')
+clusters = kproto.fit_predict(data4_norm, categorical= [0,1])
+#join data with labels 
+labels = pd.DataFrame(clusters)
+labeled_data4 = pd.concat((data4,labels),axis=1)
+labeled_data4 = labeled_data4.rename({0:'labels'},axis=1) #non veniva
+
+data4.dtypes("gender")
+data4_norm["gender"] = data4_norm["gender"].astype(float)
+data4.dtypes
+
+data4["gender"] = pd.to_numeric(data4["gender"])
+
+
+#categorical=[0,2,3,4,5,6,8,10,12,14,15,16,17,22,23,24,25,26,28,29,30,31,32,33])
+
+#customers_norm = customers.copy()
+#scaler = preprocessing.MinMaxScaler()
+#customers_norm[['Age','Time Spent']] = scaler.fit_transform(customers_norm[['Age','Time Spent']])
+
+data_dummy_norm = data_dummy.copy()
+scaler = preprocessing.MinMaxScaler()
+data_dummy_norm[['age', 'languages', 'bro_sis', 'coffee', 'phone_usage', 'sleep_average', 'hobbies_time']] = scaler.fit_transform(data_dummy_norm[['age', 'languages', 'bro_sis', 'coffee', 'phone_usage', 'sleep_average', 'hobbies_time']])
+
+kproto = KPrototypes(n_clusters=3, init='Cao')
+clusters = kproto.fit_predict(customers_norm, categorical=[0, 1])
+#join data with labels 
+labels = pd.DataFrame(clusters)
+labeledCustomers = pd.concat((customers,labels),axis=1)
+labeledCustomers = labeledCustomers.rename({0:'labels'},axis=1)
+
+from kmodes.kprototypes import KPrototypes
+kproto = KPrototypes(n_clusters=5, init='Cao')
+clusters = kproto.fit_predict(data_dummy_norm, categorical=[0, 1])
+
+labels = pd.data_dummy_norm(clusters)
+labeled_data = pd.concat((data_dummy,labels),axis=1)
+labeled_data = labeled_data.rename({0:'labels'},axis=1)
+
+#pisciate le dummy (?)
+
+from sklearn.cluster import KMeans
+kmeans = KMeans(5)
+clusters = kmeans.fit_predict(data_dummy_norm)
+labels = pd.DataFrame(clusters)
+labeled_data = pd.concat((data_dummy,labels),axis=1)
+labeled_data = labeled_data.rename({0:'labels'},axis=1)
+labeled_data
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+labeled_data['Constant'] = 0 #dummy feature for plotting
+
+f, axes = plt.subplots(1, 4, figsize=(25, 7), sharex=False)
+f.subplots_adjust(hspace=0.2, wspace=0.7)
+
+for i in range(4):
+    col = labeled_data.columns[i]
+    if i > 5:    
+        sns.catplot(x=col, y='labels', kind="swarm", hue='labels', data=labeled_data,ax=axes[i])
+    else:
+        ax = sns.swarmplot(x=labeled_data['Constant'],y=labeled_data[col].values,hue=labeled_data['labels'],ax=axes[i])
+        ax.set_title(col)
+        
+plt.close(2)
+plt.close(3)
+plt.show()
+
+
+
+
+
+#prova olli
+
+# Import module for data visualization
+pip install plotnine
+from plotnine import *
+import plotnine
+# Data visualization with matplotlib
+import matplotlib.pyplot as plt
+# Use the theme of ggplot
+plt.style.use('ggplot')
+from kmodes.kmodes import KModes
+
+data4_norm.select_dtypes('object').nunique()
+data4_norm.isna().sum() #to check if there are missing values 
+
+#convert dataframe into matrix 
+data4_norm_matrix = data4_norm.to_numpy()
+data4_norm_matrix
+
+data4_norm.dtypes()
+data4_norm.info()
+
+#proviamo a convertire in float 
+data4_norm['stress'] = float(data4_norm['stress'])
+#non va 
+#provo a standardizzare anche le variabili int 
+scaler = preprocessing.MinMaxScaler()
+data4_norm[['age', 'languages', 'bro_sis', 'coffee', 'phone_usage', 'sleep_average', 'hobbies_time', 'stress', 'alcohol', 'nutrition_care', 'diet']] = scaler.fit_transform(data4_norm[['age', 'languages', 'bro_sis', 'coffee', 'phone_usage', 'sleep_average', 'hobbies_time', 'stress', 'alcohol', 'nutrition_care', 'diet']])
+#rifamo la matrice
+data4_norm_matrix = data4_norm.to_numpy()
+data4_norm_matrix
+
+    
+
+#prova 2 
+# Elbow curve to find optimal K
+cost = []
+K = range(1,53)
+for num_clusters in list(K):
+    kmode = KModes(n_clusters=num_clusters, init = "random", n_init = 5, verbose=1)
+    kmode.fit_predict(data4_norm_matrix)
+    cost.append(kmode.cost_)
+    
+plt.plot(K, cost, 'bx-')
+plt.xlabel('No. of clusters')
+plt.ylabel('Cost')
+plt.title('Elbow Method For Optimal k')
+plt.show()
+
+
+
+#elbow method
+cost = []
+for cluster in range(1, 10):
+    try:
+        kmodes = KModes(n_jobs = -1, n_clusters = cluster, init = 'Huang', random_state = 0)
+        kmodes.fit_predict(data4_norm_matrix)
+        cost.append(kmodes.cost_)
+        print('Cluster initiation: {}'.format(cluster))
+    except:
+        break
+    
+# Converting the results into a dataframe and plotting them
+df_cost = pd.DataFrame({'Cluster': range(1, 10), 'Cost': cost})
+
+
+
+
+from kmodes.kprototypes import KPrototypes
+
+data4_norm['sport'].str.strip()
+data4_norm['gender'].str.strip()
+
+data4_norm_matrix[:, 0] = data4_norm_matrix[:, 0].astype(float)
+data4_norm_matrix[:, 2] = data4_norm_matrix[:, 2].astype(float)
+data4_norm_matrix[:, 3] = data4_norm_matrix[:, 3].astype(float)
+data4_norm_matrix[:, 4] = data4_norm_matrix[:, 4].astype(float)
+data4_norm_matrix[:, 5] = data4_norm_matrix[:, 5].astype(float)
+data4_norm_matrix[:, 6] = data4_norm_matrix[:, 6].astype(float)
+data4_norm_matrix[:, 8] = data4_norm_matrix[:, 8].astype(float)
+data4_norm_matrix[:, 10] = data4_norm_matrix[:, 10].astype(float)
+data4_norm_matrix[:, 12] = data4_norm_matrix[:, 12].astype(float)
+data4_norm_matrix[:, 14] = data4_norm_matrix[:, 14].astype(float)
+data4_norm_matrix[:, 15] = data4_norm_matrix[:, 15].astype(float)
+data4_norm_matrix[:, 16] = data4_norm_matrix[:, 16].astype(float)
+data4_norm_matrix[:, 17] = data4_norm_matrix[:, 17].astype(float)
+data4_norm_matrix[:, 22] = data4_norm_matrix[:, 22].astype(float)
+data4_norm_matrix[:, 23] = data4_norm_matrix[:, 23].astype(float)
+data4_norm_matrix[:, 24] = data4_norm_matrix[:, 24].astype(float)
+data4_norm_matrix[:, 25] = data4_norm_matrix[:, 25].astype(float)
+data4_norm_matrix[:, 26] = data4_norm_matrix[:, 26].astype(float)
+data4_norm_matrix[:, 28] = data4_norm_matrix[:, 28].astype(float)
+data4_norm_matrix[:, 29] = data4_norm_matrix[:, 29].astype(float)
+data4_norm_matrix[:, 30] = data4_norm_matrix[:, 30].astype(float)
+data4_norm_matrix[:, 31] = data4_norm_matrix[:, 31].astype(float)
+data4_norm_matrix[:, 32] = data4_norm_matrix[:, 32].astype(float)
+data4_norm_matrix[:, 33] = data4_norm_matrix[:, 33].astype(float)
+
+data4_norm_matrix
+
+
+
+
+
+
+
+kproto = KPrototypes(n_clusters=6, verbose=2,max_iter=20)
+clusters = kproto.fit_predict(data4_norm_matrix, categorical=[0,2,3,4,5,6,8,10,12,14,15,16,17,22,23,24,25,26,28,29,30,31,32,33])
+
+
+
+
+
+# Data viz
+plotnine.options.figure_size = (8, 4.8)
+(
+    ggplot(data = df_cost)+
+    geom_line(aes(x = 'Cluster',
+                  y = 'Cost'))+
+    geom_point(aes(x = 'Cluster',
+                   y = 'Cost'))+
+    geom_label(aes(x = 'Cluster',
+                   y = 'Cost',
+                   label = 'Cluster'),
+               size = 10,
+               nudge_y = 1000) +
+    labs(title = 'Optimal number of cluster with Elbow Method')+
+    xlab('Number of Clusters k')+
+    ylab('Cost')+
+    theme_minimal()
+)
+
+
+#tentativo 3
+#convertire numerical data 
+from sklearn.preprocessing import PowerTransformer
+for c in data4_norm.select_dtypes(exclude='object').columns:
+    pt = PowerTransformer()
+    data4_norm[c] =  pt.fit_transform(np.array(data4_norm[c]).reshape(-1, 1))
+
+categorical_columns = data4_norm[(0,2,3,4,5,6,8,10,12,14,15,16,17,22,23,24,25,26,28,29,30,31,32,33)] #make sure to specify correct indices
+#categorical_columns = data4_norm[['gender', 'sport', 'sport_frequency', 'uni', 'insomnia', 'days_without_phone', 'phone_distraction', 'book_movie', 'books_year', 'daily_news','text_call', 'bored', 'phone_with_people', 'cigarettes', 'valuable_things', 'happiness', 'parents_ent', 'parents_degree', 'carbonated_drinks', 'calories', 'bachelor_degree', 'smoking_parents','smoking_friends', 'anxiety']]
+data4_norm.info()
+
+
+#get index from a column 
+
+kproto = KPrototypes(n_clusters= 15, init='Cao', n_jobs = 4)
+clusters = kproto.fit_predict(data4_norm, categorical=categorical_columns)
+
+#Prints the count of each cluster group
+pd.Series(clusters).value_counts()
+
+
+
+
+
+
+
+
+
+
+
+#word cloud for "self"
+data1["self"] = data1["self"].astype("string")
+text = data1["self"]
+wordcloud = WordCloud().generate(str(text))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+plt.show()
+
+data2["self"] = data2["self"].astype("string")
+text2 = data2["self"]
+wordcloud = WordCloud().generate(str(text2))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+plt.show()
+#va migliorata la grafica
+
+#word cloud "best_quality"
+data1["best_quality"] = data1["best_quality"].astype("string")
+text_bestquality = data1["best_quality"]
+wordcloud = WordCloud().generate(str(text_bestquality))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+plt.show()
+
+data2["best_quality"] = data2["best_quality"].astype("string")
+text_bestquality2 = data1["best_quality"]
+wordcloud = WordCloud().generate(str(text_bestquality))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis("off")
+plt.show()
+
+#va migliorata la grafica 
+
+
+df("titolo").plot(kind = "hist", "line")
+
+
+data1["Where did you graduate?"] = data1["Where did you graduate?"].astype("string")
+
+
+print(data1["Where did you graduate?"])
+
+    
+grad_stud = data1["Where did you graduate?"]
+names = data1["keyword"]
+plt.bar(grad_stud, names, color='green')
+plt.legend()
+plt.xticks(rotation= 75)
+plt.show()
+#brutto
+
+data4 = pd.get_dummies(data3['gender'])
+
+
+
+
+
